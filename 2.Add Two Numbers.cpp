@@ -1,22 +1,3 @@
-'''
-2. Add Two Numbers
-Medium
-Topics
-Companies
-You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
-
-You may assume the two numbers do not contain any leading zero, except the number 0 itself.
-
- 
-
-Example 1:
-
-
-Input: l1 = [2,4,3], l2 = [5,6,4]
-Output: [7,0,8]
-Explanation: 342 + 465 = 807.
-'''
-
 #include <iostream>
 
 using namespace std;
@@ -25,7 +6,7 @@ using namespace std;
 struct ListNode {
     int val;
     ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
+    ListNode(int x) : val(x), next(nullptr) {} // Use nullptr instead of NULL
 };
 
 // Function to add two numbers represented as linked lists
@@ -52,20 +33,24 @@ ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
         current = current->next;
     }
 
-    return dummy->next; // Return the result list (skip dummy)
+    ListNode* result = dummy->next;
+    delete dummy; // Free the dummy node
+    return result; // Return the result list (skip dummy)
 }
 
-// Helper function to create a linked list from a vector
-ListNode* createLinkedList(int arr[], int size) {
-    ListNode* dummy = new ListNode(0);
-    ListNode* current = dummy;
+// Helper function to create a linked list from an array
+ListNode* createLinkedList(const int arr[], int size) {
+    if (size == 0) return nullptr; // Handle empty array case
 
-    for (int i = 0; i < size; i++) {
+    ListNode* head = new ListNode(arr[0]); // First node
+    ListNode* current = head;
+
+    for (int i = 1; i < size; i++) {
         current->next = new ListNode(arr[i]);
         current = current->next;
     }
 
-    return dummy->next;
+    return head;
 }
 
 // Helper function to print a linked list
@@ -78,6 +63,15 @@ void printLinkedList(ListNode* node) {
     cout << endl;
 }
 
+// Helper function to free memory
+void freeLinkedList(ListNode* node) {
+    while (node) {
+        ListNode* temp = node;
+        node = node->next;
+        delete temp;
+    }
+}
+
 // Main function
 int main() {
     int arr1[] = {2, 4, 3}; // Represents number 342
@@ -87,7 +81,14 @@ int main() {
     ListNode* l2 = createLinkedList(arr2, 3);
 
     ListNode* result = addTwoNumbers(l1, l2);
+
+    cout << "Sum: ";
     printLinkedList(result); // Output: 7 -> 0 -> 8 (Represents 807)
+
+    // Free allocated memory
+    freeLinkedList(l1);
+    freeLinkedList(l2);
+    freeLinkedList(result);
 
     return 0;
 }
